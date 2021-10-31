@@ -1,0 +1,60 @@
+menu "Box Configuration"
+  config HEATING_TARGET_TEMP
+      int "Heating target temp"
+      default 27
+
+  config HEATING_MAX_DURATION
+      int "Heating max duration"
+      default 1
+
+  config HEATING_MIN_PAUSE
+      int "Heating min pause"
+      default 5
+
+  config HEATING_UPDATE_INTERVAL
+      int "Heating update interval"
+      default 1000
+
+  config METRICS_URL
+      string "Metrics endpoint URL"
+
+  config METRICS_TOKEN
+      string "Metrics auth token"
+
+  config METRICS_NOTIFY_INTERVAL
+      int "Metrics notify interval"
+      default 5000
+
+  config OTA_URL
+      string "OTA firmware update endpoint URL"
+
+  config OTA_UPDATE_INTERVAL
+      int "OTA firmware update interval"
+      default 5000
+
+  config SENSOR_UPDATE_INTERVAL
+      int "Sensor update interval"
+      default 3000
+
+  config SENSOR_MAX_FAILURES
+      int "Sensor max allowed failures"
+      default 100
+
+  config UDP_LOG_ADDRESS
+      string "UDP log endpoint address"
+
+  config UDP_LOG_PORT
+      int "UDP log endpoint port"
+      default 0
+
+  config WIFI_SSID
+      string "WiFi SSID"
+      help
+    WiFi SSID (network name) to connect to.
+
+  config WIFI_PASSWORD
+      string "WiFi Password"
+      help
+    WiFi password to use.
+endmenu
+
