@@ -14,6 +14,8 @@
 #include "settings.h"
 
 extern App app;
+class Logger;
+extern Logger logger;
 
 class Logger {
   public:
@@ -22,6 +24,7 @@ class Logger {
     void init();
     void run();
     void push(char*);
+    void stop();
 
   private:
 
@@ -34,7 +37,5 @@ class Logger {
     void send(char*);
     static int vprintf(const char*, va_list);
 };
-
-extern Logger logger;
 
 #endif

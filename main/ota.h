@@ -11,6 +11,9 @@
 #include "app.h"
 #include "settings.h"
 
+class Ota;
+extern Ota ota;
+
 class Ota {
   public:
     Ota(App*, Settings::Store*);

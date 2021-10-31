@@ -12,5 +12,5 @@ const tm* now();
 const char* ftoa(float num);
 const char* ftoa(float num, int decimals);
 int power(int base, int exp);
-void systemInfo(int delay);
+void logSystemInfo();
 #endif

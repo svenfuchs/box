@@ -1,6 +1,8 @@
 #include "helper.h"
 #include "freertos/task.h"
 
+#define SYSTEM_INFO_DELAY 15000
+
 // static const char *TAG = "helper";
 
 const tm* now() {
@@ -28,22 +30,24 @@ int power(int base, int exp){
   return result;
 }
 
-void systemInfo(int delay) {
-  for(;;) {
-    uint32_t heap = esp_get_free_heap_size();
-    uint32_t min_heap = esp_get_minimum_free_heap_size();
-    ESP_LOGI(" [mem]", "Free heap: %d (min: %d)", heap, min_heap);
+void logSystemInfo() {
+  xTaskCreate([](void*) {
+    for(;;) {
+      uint32_t heap = esp_get_free_heap_size();
+      uint32_t min_heap = esp_get_minimum_free_heap_size();
+      ESP_LOGI(" [mem]", "Free heap: %d (min: %d)", heap, min_heap);
 
-    TaskStatus_t *tasks;
-    UBaseType_t count = uxTaskGetNumberOfTasks();
-    tasks = (TaskStatus_t*) pvPortMalloc(count * sizeof(TaskStatus_t));
-    count = uxTaskGetSystemState(tasks, count, nullptr);
-    for(UBaseType_t i = 0; i < count; i++) {
-      if(strcmp(tasks[i].pcTaskName, "IDLE") == 0) continue;
-      ESP_LOGI(" [mem]", "%-12s %i", tasks[i].pcTaskName, tasks[i].usStackHighWaterMark);
+      TaskStatus_t *tasks;
+      UBaseType_t count = uxTaskGetNumberOfTasks();
+      tasks = (TaskStatus_t*) pvPortMalloc(count * sizeof(TaskStatus_t));
+      count = uxTaskGetSystemState(tasks, count, nullptr);
+      for(UBaseType_t i = 0; i < count; i++) {
+        if(strcmp(tasks[i].pcTaskName, "IDLE") == 0) continue;
+        ESP_LOGI(" [mem]", "%-12s %i", tasks[i].pcTaskName, tasks[i].usStackHighWaterMark);
+      }
+      vPortFree(tasks);
+
+      vTaskDelay(SYSTEM_INFO_DELAY / portTICK_PERIOD_MS);
     }
-    vPortFree(tasks);
-
-    vTaskDelay(delay / portTICK_PERIOD_MS);
-  }
+  }, "info", 1024 * 8, NULL, 5, NULL);
 }

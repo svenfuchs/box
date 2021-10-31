@@ -13,7 +13,8 @@ Heating::Heating(App* a, Settings::Store* st, Sensor* sn) {
 
 void Heating::init() {
   relay->init();
-  read();
+  // read();
+  xTaskCreate([](void*) { heating.run(); }, "heating", 1024 * 8, NULL, 5, NULL);
 }
 
 void Heating::run() {

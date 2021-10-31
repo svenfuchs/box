@@ -2,6 +2,7 @@
 #define SENSOR_H
 
 class Sensor;
+extern Sensor sensor;
 
 #include <time.h>
 #include "freertos/FreeRTOS.h"
@@ -39,4 +40,5 @@ class Sensor {
     void info();
     void delay();
 };
+
 #endif

@@ -9,7 +9,8 @@ Sensor::Sensor(App* a, Settings::Store* s) {
 
 void Sensor::init() {
   gpio_set_pull_mode(gpio, GPIO_PULLUP_ONLY);
-  update();
+  // update();
+  xTaskCreate([](void*) { sensor.run(); }, "sensor", 1024 * 8, NULL, 5, NULL);
 }
 
 void Sensor::run() {

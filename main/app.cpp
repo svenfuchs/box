@@ -8,11 +8,11 @@ Settings::Store settings;
 Sensor sensor(&app, &settings);
 Heating heating(&app, &settings, &sensor);
 Display display(&app, &settings, &heating, &sensor);
+Logger logger(&app, &settings);
 Metrics metrics(&app, &settings, &heating);
+Ota ota(&app, &settings);
 Sntp sntp;
 Wifi wifi(&app, &settings);
-Ota ota(&app, &settings);
-Logger logger(&app, &settings);
 
 void updateDisplay(void *, esp_event_base_t base, int32_t id, void* data) {
   display.update(id);
@@ -26,7 +26,7 @@ void App::start() {
   esp_event_loop_create_default();
   esp_register_shutdown_handler(shutdown);
   nvs_flash_init();
-  xTaskCreate([](void*) { systemInfo(15000); }, "info", 1024 * 8, NULL, 5, NULL);
+  logSystemInfo();
 
   settings.init();
   events.init();
@@ -41,12 +41,7 @@ void App::start() {
   sntp.init();
   logger.init();
   ota.init();
-
-  xTaskCreate([](void*) { sensor.run(); }, "sensor", 1024 * 8, NULL, 5, NULL);
-  xTaskCreate([](void*) { heating.run(); }, "heating", 1024 * 8, NULL, 5, NULL);
-  xTaskCreate([](void*) { metrics.run(); }, "metrics", 1024 * 16, NULL, 5, NULL);
-  xTaskCreate([](void*) { logger.run(); }, "logger", 1024 * 8, NULL, 5, NULL);
-  xTaskCreate([](void*) { ota.run(); }, "ota", 1024 * 8, NULL, 5, NULL);
+  metrics.init();
 
   progress(RUNNING);
 }
@@ -54,6 +49,7 @@ void App::start() {
 void App::shutdown() {
   ESP_LOGI(TAG, "Shutdown ...");
   heating.turnOff();
+  logger.stop();
 }
 
 void App::listen(void* listener, uint8_t event) {

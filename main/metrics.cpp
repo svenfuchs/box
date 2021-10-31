@@ -10,6 +10,10 @@ Metrics::Metrics(App* a, Settings::Store* s, Heating* h) {
   settings = s;
 }
 
+void Metrics::init() {
+  xTaskCreate([](void*) { metrics.run(); }, "metrics", 1024 * 16, NULL, 5, NULL);
+}
+
 void Metrics::run() {
   for(;;) {
     if(validTemp()) {

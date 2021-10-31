@@ -2,6 +2,7 @@
 #define HEATING_H
 
 class Heating;
+extern Heating heating;
 
 #include <time.h>
 #include <math.h>

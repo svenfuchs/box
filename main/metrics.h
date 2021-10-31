@@ -1,6 +1,9 @@
 #ifndef METRICS_H
 #define METRICS_H
 
+class Metrics;
+extern Metrics metrics;
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "cJSON.h"
@@ -26,6 +29,7 @@ class Metrics {
   public:
     Metrics(App*, Settings::Store*, Heating*);
 
+    void init();
     void run();
 
   private:

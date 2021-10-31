@@ -24,16 +24,28 @@ void Logger::init() {
   dest.sin_port = htons(port);
 
   sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP);
-  if (sock < 0) ESP_LOGE(TAG, "Unable to create socket: errno %d", errno);
+  if (sock < 0) {
+    ESP_LOGE(TAG, "Unable to create socket: errno %d", errno);
+    return;
+  }
+
+  esp_log_set_vprintf(Logger::vprintf);
+  xTaskCreate([](void*) { logger.run(); }, "logger", 1024 * 8, NULL, 5, NULL);
 }
 
 void Logger::run() {
-  esp_log_set_vprintf(Logger::vprintf);
   while (true) {
     char* msg = pop();
     send(msg);
     free((void*) msg);
   }
+}
+
+void Logger::stop() {
+  esp_log_set_vprintf(::vprintf);
+  xQueueReset(queue);
+	shutdown(sock, 0);
+	close(sock);
 }
 
 void Logger::push(char* msg) {

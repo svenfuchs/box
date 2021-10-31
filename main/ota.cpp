@@ -10,8 +10,7 @@ Ota::Ota(App* a, Settings::Store* s) {
 }
 
 void Ota::init() {
-  // esp_log_level_set("esp_https_ota", ESP_LOG_ERROR);
-  // esp_log_level_set("ota", ESP_LOG_INFO);
+  xTaskCreate([](void*) { ota.run(); }, "ota", 1024 * 8, NULL, 5, NULL);
 }
 
 void Ota::run() {
