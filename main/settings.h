@@ -1,12 +1,17 @@
 #ifndef STORE_H
 #define STORE_H
 
+namespace Settings {
+  class Store;
+}
+
 #include <string.h>
 #include <memory>
 #include <type_traits>
 #include "cJSON.h"
 #include "esp_log.h"
 #include "nvs_flash.h"
+#include "app.h"
 
 namespace Settings {
   struct Data {
@@ -30,6 +35,9 @@ namespace Settings {
   class Store {
     public:
 
+      App* app;
+
+      Store(App*);
       void init();
       bool set(Data);
       Data parse(const char* str);

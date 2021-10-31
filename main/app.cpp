@@ -3,15 +3,15 @@
 static const char *TAG = "[main]";
 
 App app;
-Events events;
-Settings::Store settings;
+Events events(&app);
+Settings::Store settings(&app);
 Sensor sensor(&app, &settings);
 Heating heating(&app, &settings, &sensor);
 Display display(&app, &settings, &heating, &sensor);
 Logger logger(&app, &settings);
 Metrics metrics(&app, &settings, &heating);
 Ota ota(&app, &settings);
-Sntp sntp;
+Sntp sntp(&app);
 Wifi wifi(&app, &settings);
 
 void updateDisplay(void *, esp_event_base_t base, int32_t id, void* data) {
@@ -26,23 +26,19 @@ void App::start() {
   esp_event_loop_create_default();
   esp_register_shutdown_handler(shutdown);
   nvs_flash_init();
-  logSystemInfo();
 
-  settings.init();
   events.init();
+  settings.init();
   display.init();
   sensor.init();
   heating.init();
 
-  progress(BOOTING_WIFI);
   wifi.connect();
-
-  progress(BOOTING_SNTP);
   sntp.init();
   logger.init();
   ota.init();
   metrics.init();
-
+  logSystemInfo();
   progress(RUNNING);
 }
 
@@ -53,7 +49,7 @@ void App::shutdown() {
 }
 
 void App::listen(void* listener, uint8_t event) {
-  events.listen((int32_t) event, updateDisplay); // no idea how to use listener
+  events.listen((int32_t) event, updateDisplay); // no idea how to use the argument listener ...
 }
 
 void App::publish(uint8_t event) {

@@ -21,9 +21,16 @@ extern App app;
 #include "wifi.h"
 
 enum {
-  BOOTING_INIT,
-  BOOTING_WIFI,
-  BOOTING_SNTP,
+  INIT_BOOT,
+  INIT_SETTINGS,
+  INIT_DISPLAY,
+  INIT_SENSOR,
+  INIT_HEATING,
+  INIT_WIFI,
+  INIT_SNTP,
+  INIT_LOGGER,
+  INIT_OTA,
+  INIT_METRICS,
   RUNNING
 };
 
@@ -36,7 +43,7 @@ enum {
 
 class App {
   public:
-    uint8_t state = BOOTING_INIT;
+    uint8_t state = INIT_BOOT;
     uint8_t errors = 0;
 
     void start();

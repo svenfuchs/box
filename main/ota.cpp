@@ -10,6 +10,8 @@ Ota::Ota(App* a, Settings::Store* s) {
 }
 
 void Ota::init() {
+  ESP_LOGI(TAG, "Init ota");
+  app->progress(INIT_OTA);
   xTaskCreate([](void*) { ota.run(); }, "ota", 1024 * 8, NULL, 5, NULL);
 }
 
@@ -39,7 +41,7 @@ bool Ota::start() {
 
   esp_http_client_config_t http_cfg = {};
   http_cfg.url = settings->getOtaUrl();
-  http_cfg.timeout_ms = 5000;
+  http_cfg.timeout_ms = 1000;
   esp_https_ota_config_t cfg = {};
   cfg.http_config = &http_cfg;
   // http_cfg.cert_pem = (char*) cert_start;

@@ -30,6 +30,7 @@ class Display {
     Settings::Store* settings;
     Sensor* sensor;
 
+    void setup();
     void drawBootScreen();
     void drawTempScreen();
     char* formatTemp(float);

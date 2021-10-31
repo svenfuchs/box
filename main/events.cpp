@@ -4,6 +4,10 @@
 ESP_EVENT_DEFINE_BASE(EVENTS);
 // static const char *TAG = "[evnt]";
 
+Events::Events(App* a) {
+  app = a;
+}
+
 void Events::init() {
   esp_event_loop_args_t args = {};
   args.queue_size = CONFIG_ESP_SYSTEM_EVENT_QUEUE_SIZE;

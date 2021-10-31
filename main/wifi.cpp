@@ -29,7 +29,6 @@ Wifi::Wifi(App* a, Settings::Store* s) {
 }
 
 void Wifi::connect() {
-  ESP_LOGI(TAG, "Starting WiFi connection to %s...", settings->getWifiSsid());
   init();
   createNetif();
   registerHandlers();
@@ -40,6 +39,9 @@ void Wifi::connect() {
 }
 
 void Wifi::init() {
+  ESP_LOGI(TAG, "Starting WiFi connection to %s...", settings->getWifiSsid());
+  app->progress(INIT_WIFI);
+
   esp_netif_init();
   wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
   esp_wifi_init(&cfg);

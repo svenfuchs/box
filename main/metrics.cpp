@@ -11,6 +11,8 @@ Metrics::Metrics(App* a, Settings::Store* s, Heating* h) {
 }
 
 void Metrics::init() {
+  ESP_LOGI(TAG, "Init metrics");
+  app->progress(INIT_METRICS);
   xTaskCreate([](void*) { metrics.run(); }, "metrics", 1024 * 16, NULL, 5, NULL);
 }
 
@@ -20,8 +22,11 @@ void Metrics::run() {
       ESP_LOGI(TAG, "Sending metrics.");
       const char *data = capture();
       Response response = post(settings->getMetricsUrl(), data);
+
       if(response.status == 201) {
         handle(response.body);
+      } else {
+        ESP_LOGE(TAG, "Failed sending metrics. Response status: %i", response.status);
       }
       delete data;
     }
@@ -59,7 +64,7 @@ Response Metrics::post(const char* url, const char* data) {
   esp_http_client_set_header(client, "Content-Type", "application/json");
 
   esp_err_t err = esp_http_client_open(client, strlen(data));;
-  if ((err = esp_http_client_open(client, 0)) != ESP_OK) {
+  if (err != ESP_OK) {
     ESP_LOGE(TAG, "Failed to open HTTP connection: %s", esp_err_to_name(err));
   }
   esp_http_client_write(client, data, strlen(data));
@@ -74,7 +79,7 @@ Response Metrics::post(const char* url, const char* data) {
 
 void Metrics::handle(const char* body) {
   if(!settings->set(settings->parse(body))) return;
-  ESP_LOGI(TAG, "SETTINGS UPDATED");
+  ESP_LOGI(TAG, "Settings updated");
   app->publish(SETTINGS_UPDATED);
 }
 

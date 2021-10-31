@@ -13,7 +13,18 @@ Display::Display(App* a, Settings::Store* st, Heating* h, Sensor* sn) {
 }
 
 void Display::init() {
-  ESP_LOGI(TAG, "Display init.");
+  ESP_LOGI(TAG, "Init display");
+  app->progress(INIT_DISPLAY);
+
+  setup();
+
+  app->listen(this, BOOT_PROGRESS);
+  app->listen(this, SENSOR_UPDATED);
+  app->listen(this, HEATING_UPDATED);
+  app->listen(this, SETTINGS_UPDATED);
+}
+
+void Display::setup() {
   u8g2_esp32_hal_t cnf;
   memset(&cnf, 0, sizeof(u8g2_esp32_hal_t));
   cnf.sda = PIN_SDA;
@@ -29,11 +40,6 @@ void Display::init() {
 
   u8g2_InitDisplay(&u8g2);
   u8g2_SetPowerSave(&u8g2, 0);
-
-  app->listen(this, BOOT_PROGRESS);
-  app->listen(this, SENSOR_UPDATED);
-  app->listen(this, HEATING_UPDATED);
-  app->listen(this, SETTINGS_UPDATED);
 
   drawBootScreen();
 }
@@ -58,14 +64,23 @@ void Display::drawBootScreen() {
 
   u8g2_SetFont(&u8g2, u8g2_font_helvR08_tf);
   switch(app->state) {
-    case BOOTING_INIT:
+    case INIT_BOOT:
+    case INIT_SETTINGS:
+    case INIT_DISPLAY:
+    case INIT_SENSOR:
+    case INIT_HEATING:
       u8g2_DrawStr(&u8g2, 43, 52, "Booting ...");
       break;
-    case BOOTING_WIFI:
+    case INIT_WIFI:
       u8g2_DrawStr(&u8g2, 43, 52, "Init WiFi ...");
       break;
-    case BOOTING_SNTP:
+    case INIT_SNTP:
       u8g2_DrawStr(&u8g2, 40, 52, "Sync time ...");
+      break;
+    case INIT_LOGGER:
+    case INIT_OTA:
+    case INIT_METRICS:
+      u8g2_DrawStr(&u8g2, 38, 52, "Init services ...");
       break;
   }
   u8g2_SendBuffer(&u8g2);
@@ -73,6 +88,8 @@ void Display::drawBootScreen() {
 
 void Display::drawTempScreen() {
   u8g2_ClearBuffer(&u8g2);
+  u8g2_SetFlipMode(&u8g2, 0);
+  u8g2_SetDisplayRotation(&u8g2, U8G2_R0);
 
   u8g2_SetFont(&u8g2, u8g2_font_helvR10_tf);
 

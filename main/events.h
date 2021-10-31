@@ -3,6 +3,7 @@
 
 #include "esp_event.h"
 #include "esp_log.h"
+#include "app.h"
 
 ESP_EVENT_DECLARE_BASE(EVENTS);
 
@@ -16,12 +17,14 @@ enum {
 class Events {
   public:
 
+    Events(App*);
     void init();
     void listen(int32_t event, esp_event_handler_t handler); // , void *event_handler_arg
     void post(int32_t event);
 
   private:
 
+    App* app;
     esp_event_loop_handle_t loop;
 };
 #endif

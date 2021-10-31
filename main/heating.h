@@ -20,7 +20,7 @@ class Heating {
     float currentTemp;
     float targetTemp;
 
-    Heating(App* app, Settings::Store*, Sensor*);
+    Heating(App*, Settings::Store*, Sensor*);
     void init();
     void run();
     void turnOn();

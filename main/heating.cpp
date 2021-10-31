@@ -12,9 +12,11 @@ Heating::Heating(App* a, Settings::Store* st, Sensor* sn) {
 }
 
 void Heating::init() {
+  ESP_LOGI(TAG, "Init heating ...");
+  app->progress(INIT_HEATING);
   relay->init();
   // read();
-  xTaskCreate([](void*) { heating.run(); }, "heating", 1024 * 8, NULL, 5, NULL);
+  xTaskCreate([](void*) { heating.run(); }, "heating", 1024 * 12, NULL, 5, NULL);
 }
 
 void Heating::run() {

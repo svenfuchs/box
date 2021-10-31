@@ -20,6 +20,10 @@ static const char *TAG = "[stor]";
 
 using namespace Settings;
 
+Store::Store(App* a) {
+  app = a;
+}
+
 void Store::init() {
   open();
   read();
@@ -127,13 +131,13 @@ Data Store::parse(const char* str) {
   cJSON *json = cJSON_Parse(str);
   Data data = {};
 
-  cJSON* node = cJSON_GetObjectItemCaseSensitive(json, "target_temp");
+  cJSON* node = cJSON_GetObjectItemCaseSensitive(json, "heating_target_temp");
   if(cJSON_IsNumber(node)) data.heatingTargetTemp = node->valuedouble;
 
-  node = cJSON_GetObjectItemCaseSensitive(json, "heating_duration");
+  node = cJSON_GetObjectItemCaseSensitive(json, "heating_max_duration");
   if(cJSON_IsNumber(node)) data.heatingMaxDuration = node->valueint;
 
-  node = cJSON_GetObjectItemCaseSensitive(json, "heating_pause");
+  node = cJSON_GetObjectItemCaseSensitive(json, "heating_min_pause");
   if(cJSON_IsNumber(node)) data.heatingMinPause = node->valueint;
 
   node = cJSON_GetObjectItemCaseSensitive(json, "heating_update_interval");

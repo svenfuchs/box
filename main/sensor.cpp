@@ -8,6 +8,8 @@ Sensor::Sensor(App* a, Settings::Store* s) {
 }
 
 void Sensor::init() {
+  ESP_LOGI(TAG, "Init sensor");
+  app->progress(INIT_SENSOR);
   gpio_set_pull_mode(gpio, GPIO_PULLUP_ONLY);
   // update();
   xTaskCreate([](void*) { sensor.run(); }, "sensor", 1024 * 8, NULL, 5, NULL);
@@ -49,8 +51,8 @@ void Sensor::failure() {
     ESP_LOGE(TAG, "Too many sensor failures, rebooting ...");
     esp_restart();
   }
-  temperature = -1;
-  humidity = -1;
+  temperature = 0;
+  humidity = 0;
   failures++;
   app->addError(ERR_SENSOR_READ);
 }

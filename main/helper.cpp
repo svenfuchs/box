@@ -43,6 +43,7 @@ void logSystemInfo() {
       count = uxTaskGetSystemState(tasks, count, nullptr);
       for(UBaseType_t i = 0; i < count; i++) {
         if(strcmp(tasks[i].pcTaskName, "IDLE") == 0) continue;
+        if(tasks[i].pcTaskName == NULL) continue;
         ESP_LOGI(" [mem]", "%-12s %i", tasks[i].pcTaskName, tasks[i].usStackHighWaterMark);
       }
       vPortFree(tasks);

@@ -36,6 +36,10 @@ class Logger {
     char* pop();
     void send(char*);
     static int vprintf(const char*, va_list);
+
+    char* format(char*);
+    int severity(char);
+    int pri(char);
 };
 
 #endif

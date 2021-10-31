@@ -3,8 +3,14 @@
 static const char* TAG = "time";
 const int RETRIES = 20;
 
+Sntp::Sntp(App* a) {
+  app = a;
+}
+
 void Sntp::init() {
-  ESP_LOGI(TAG, "Initializing SNTP");
+  ESP_LOGI(TAG, "Init SNTP");
+  app->progress(INIT_SNTP);
+
   sntp_setoperatingmode(SNTP_OPMODE_POLL);
   sntp_setservername(0, "pool.ntp.org");
   sntp_setservername(1, "europe.pool.ntp.org");
